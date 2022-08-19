@@ -2,9 +2,7 @@ import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:plant/screens/plant_editor.dart';
-import 'package:plant/screens/screens.dart';
-
-import '../data/sql.dart';
+import '../data/data.dart';
 import '../models/plant_model.dart';
 import '../widget/widgets.dart';
 
@@ -28,13 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
     refreshNotes();
   }
 
-  // @override
-  // void dispose() {
-  //   PlantDatabase.instance.close();
-
-  //   super.dispose();
-  // }
-
   Future refreshNotes() async {
     setState(() => isLoading = true);
 
@@ -46,38 +37,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-  
+
     return Scaffold(
-    
       body: isLoading
           ? Center(
-              child: SizedBox(
-                height: 350.0,
-                width: 300.0,
-                child: Column(
-                  children: const <Widget>[
-                    Image(
-                      image: AssetImage('images/a1.png'),
-                      fit: BoxFit.cover,
-                    ),
-                    Text(
-                      "Loading...",
-                      style: TextStyle(color: Colors.green),
-                    ),
-                    CircularProgressIndicator(),
-                  ],
-                ),
+              child: Column(
+                children: const <Widget>[
+                  Image(
+                    image: AssetImage('images/splash.png'),
+                    fit: BoxFit.cover,
+                  ),
+                  Text(
+                    "Loading...",
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  CircularProgressIndicator(),
+                ],
               ),
             )
           : plants.isEmpty
               ? Center(
                   child: SizedBox(
-                    height: 310.0,
-                    width: 300.0,
                     child: Column(
                       children: <Widget>[
                         const Image(
-                          image: AssetImage('images/a1.png'),
+                          image: AssetImage('images/splash.png'),
                           fit: BoxFit.cover,
                         ),
                         const Text(
@@ -103,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
               : CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      // toolbarHeight: 10,
                       title: const Text(
                         "Tree Tech",
                         style: TextStyle(color: Colors.green),
@@ -111,8 +94,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       backgroundColor: const Color(0xFFF3F5F7),
                       actions: [
                         IconButton(
-                          onPressed: () => Get.to(Settings()),
-                          icon: const Icon(Icons.settings),
+                          onPressed: () {
+                            final String hint = randomlyPickHint();
+
+                            Get.defaultDialog(
+                                title: "Hint",
+                                titleStyle:
+                                    const TextStyle(color: Colors.green),
+                                middleText: hint.split(":")[0],
+                                middleTextStyle:
+                                    const TextStyle(color: Colors.red),
+                                content: Column(
+                                  children: [
+                                    Text(
+                                      hint.split(":")[0],
+                                      style: const TextStyle(
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    SizedBox(
+                                      child: Text(
+                                        hint.split(":")[1].trim(),
+                                        style: const TextStyle(
+                                            color: Colors.black87),
+                                      ),
+                                    ),
+                                  ],
+                                ));
+                          },
+                          icon: const Icon(Icons.lightbulb),
                           color: Colors.green,
                           iconSize: 30.0,
                         ),
@@ -120,18 +131,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       snap: true,
                       floating: true,
                       pinned: false,
-                      // flexibleSpace: Text("TODO"),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                           bottom: Radius.circular(30),
                         ),
                       ),
                       bottom: PreferredSize(
-                          preferredSize: /*isEmpty!?const Size(0.0, 0.0): */ Size(
-                              screenSize.width, 100.0),
-                          child: /*isEmpty!
-                  ?  const SizedBox.shrink():*/
-                              Container(
+                          preferredSize: Size(screenSize.width, 100.0),
+                          child: Container(
                             padding: const EdgeInsets.only(
                                 left: 10.0, right: 10.0, bottom: 12.0),
                             height: 100.0,
@@ -147,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               selectionColor: Colors.green,
                               selectedTextColor: Colors.white,
                               onDateChange: (date) {
-                                // New date selected
                                 setState(() {
                                   _selectedValue = date;
                                 });

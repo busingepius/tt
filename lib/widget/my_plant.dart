@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:plant/data/image.dart';
 import 'package:plant/models/plant_model.dart';
-import 'package:plant/screens/plant.dart';
 
 class MyPlant extends StatelessWidget {
   final PlantModel? plant;
@@ -23,7 +21,6 @@ class MyPlant extends StatelessWidget {
         color: Color(0xFFF3F5F7),
       ),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -56,10 +53,17 @@ class MyPlant extends StatelessWidget {
               height: 110.0,
               width: 150.0,
               decoration:  BoxDecoration(
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10.0),
                 ),
-                image: DecorationImage(
+                image: plant!.image == ""
+                            ? const DecorationImage(
+                                image: AssetImage(
+                                  "images/splash.png",
+                                ),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
                   fit: BoxFit.cover,
                   image: MemoryImage(
                     Utility.dataFromBase64String(plant!.image)

@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../models/models.dart';
+import 'data.dart';
 
 class PlantDatabase {
   static final PlantDatabase instance = PlantDatabase._init();
@@ -25,10 +25,9 @@ class PlantDatabase {
   }
 
   Future _createDB(Database db, int version) async {
-    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    final textType = 'TEXT NOT NULL';
-    final boolType = 'BOOLEAN NOT NULL';
-    final integerType = 'INTEGER NOT NULL';
+    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const textType = 'TEXT NOT NULL';
+    const integerType = 'INTEGER NOT NULL';
 
     await db.execute('''
 CREATE TABLE $tablePlants ( 
@@ -39,18 +38,6 @@ CREATE TABLE $tablePlants (
   ${PlantFields.image} $textType,
   ${PlantFields.createdTime} $textType,
   ${PlantFields.timeReminder} $textType,
-  ${PlantFields.completed} $boolType,
-  ${PlantFields.watering} $boolType,
-  ${PlantFields.weeding} $boolType,
-  ${PlantFields.sowing} $boolType,
-  ${PlantFields.nurseryBed} $boolType,
-  ${PlantFields.mulching} $boolType,
-  ${PlantFields.potting} $boolType,
-  ${PlantFields.gapFiling} $boolType,
-  ${PlantFields.spraying} $boolType,
-  ${PlantFields.fertilizing} $boolType,
-  ${PlantFields.thinning} $boolType,
-  ${PlantFields.pruning} $boolType,
   ${PlantFields.numberWatered} $integerType, 
   ${PlantFields.numberWeeded} $integerType, 
   ${PlantFields.startedPlants} $integerType,
@@ -62,8 +49,9 @@ CREATE TABLE $tablePlants (
   Future<PlantModel> create(PlantModel plant) async {
     final db = await instance.database;
 
-    final id = await db.insert(tablePlants, plant.toJson());
-    return plant.copy(id: id);
+    plant.id = await db.insert(tablePlants, plant.toJson());
+    await FirebaseDatabase().addPlant(plant.id!, plant);
+    return plant.copy(id: plant.id);
   }
 
   Future<PlantModel> readPlant(int id) async {

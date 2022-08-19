@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:plant/screens/plant_editor.dart';
-
 import 'screens.dart';
 
 class NavScreen extends StatefulWidget {
@@ -33,7 +32,6 @@ class _NavScreenState extends State<NavScreen> {
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         selectedItemColor: Colors.green,
-        // backgroundColor: const Color(0xFFF3F5F7),
         selectedFontSize: 14.0,
         unselectedFontSize: 14.0,
         onTap: (int index) => setState(() => _currentIndex = index),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../data/data.dart';
 
 class Settings extends StatefulWidget {
-  Settings({Key? key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -16,8 +16,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Get.find();
     return Scaffold(
-      // backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           "Settings",
@@ -48,14 +48,19 @@ class _SettingsState extends State<Settings> {
                   trailing: Switch(
                       activeColor: Colors.green,
                       value: reminder,
-                      onChanged: (val) {
+                      onChanged: (val) async {
                         setState(() {
                           reminder = val;
                           if (!reminder) {
-                            Get.snackbar("Set reminders",
-                                "Please allow notifications generally");
+                            Get.snackbar(
+                              "Notifications removed",
+                              "Please allow notifications generally",
+                            );
                           }
                         });
+                        val == false
+                            ? await PushNotifications().cancelNotifications()
+                            : null;
                       }),
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
@@ -69,25 +74,14 @@ class _SettingsState extends State<Settings> {
                   child: Text(
                     "Account",
                     style: Theme.of(context).textTheme.headline6,
-                    // TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
                 ),
-                // SwitchListTile(
-                //   title: const Text('Dark Theme'),
-                //   activeColor: Colors.green,
-                //   value: isLight,
-                //   onChanged: (bool val) => val
-                //       ? Get.changeTheme(ThemeData.light())
-                //       : Get.changeTheme(ThemeData.light()),
-                // ),
-
-                // const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
                 ListTile(
                   title: const Text("Language"),
                   trailing: const Icon(Icons.arrow_forward_ios_outlined),
                   enabled: true,
                   onTap: () => Get.snackbar(
-                      "Language", "ENGLISH is the default language"),
+                      "Language", "English is the default language"),
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
                 ListTile(
@@ -99,12 +93,12 @@ class _SettingsState extends State<Settings> {
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
                 ListTile(
-                  title: const Text("Log out"),
-                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                  enabled: true,
-                  onTap: () =>
-                      Get.snackbar("Logout", "Logged out successfully"),
-                ),
+                    title: const Text("Log out"),
+                    trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                    enabled: true,
+                    onTap: () async {
+                      await userProvider.signOut();
+                    }),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
               ],
             ),
@@ -136,7 +130,8 @@ class _SettingsState extends State<Settings> {
                   enabled: true,
                   onTap: () => Get.defaultDialog(
                     title: "About us",
-                    middleText: "We know you ",
+                    middleText:
+                        "We are YLEC, a Ugandan based organisation with love to benchmark ideas and solutions to better Ugandan livelihoods and the environment ",
                   ),
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
@@ -144,20 +139,19 @@ class _SettingsState extends State<Settings> {
                   title: const Text("Contact us"),
                   trailing: const Icon(Icons.arrow_forward_ios_outlined),
                   enabled: true,
-                  onTap: () async => await Database().contactUs(),
+                  onTap: () async => await FirebaseDatabase().contactUs(),
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
                 ListTile(
                   title: const Text("Report a Bug"),
                   trailing: const Icon(Icons.arrow_forward_ios_outlined),
                   enabled: true,
-                  onTap: () async => await Database().reportBug(),
+                  onTap: () async => await FirebaseDatabase().reportBug(),
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ListTile(
-                    // leading: Icon(Icons.copyright),
                     title: const Center(child: Text("tree Tech")),
                     subtitle: Center(
                         child:

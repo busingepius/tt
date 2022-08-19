@@ -1,17 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'dart:async';
-import 'dart:io';
-
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:plant/models/models.dart';
-
 import 'package:url_launcher/url_launcher.dart';
+import '../screens/screens.dart';
+import 'data.dart';
 
-class Database {
-
+class FirebaseDatabase {
   final CollectionReference<Map<String, dynamic>> _db =
       FirebaseFirestore.instance.collection('plants');
 
@@ -32,7 +27,7 @@ class Database {
       scheme: 'mailto',
       path: 'info@ylecug.org',
       query: encodeQueryParameters(<String, String>{
-        'subject': 'I am Uganda. The land of the best of it all!',
+        'subject': 'REPORTING A BUG!',
       }),
     );
 
@@ -56,19 +51,72 @@ class Database {
     }
   }
 
-  Future<void> addPlant(PlantModel plant) async {
-    await _db.add(plant.toJson()).catchError(
-          (error) => Get.snackbar(
-            "Plant Added",
-            error,
-          ),
+  Future<void> addPlant(int id, PlantModel plant) async {
+    final plantt = PlantModel(
+      id: id,
+      title: plant.title,
+      description: plant.description,
+      image: plant.image,
+      createdTime: plant.createdTime,
+      dateReminder: plant.dateReminder,
+      leftPlants: plant.leftPlants,
+      numberWatered: plant.numberWatered,
+      numberWeeded: plant.numberWeeded,
+      startedPlants: plant.startedPlants,
+      timeReminder: plant.timeReminder,
+    );
+    try {
+      await _db.doc(id.toString()).set(plantt.toJson()).then((value) async {
+        await PushNotifications().scheduledNotification(
+          int.parse(plantt.timeReminder.format(Get.context!).split(":")[0]),
+          int.parse(plantt.timeReminder.format(Get.context!).split(":")[1]),
+          plant,
         );
+        Get.snackbar("Success", "Plant added to cloud");
+        Get.offAll(const NavScreen());
+      }).catchError((onError) async {
+        await PushNotifications().scheduledNotification(
+          int.parse(plantt.timeReminder.format(Get.context!).split(":")[0]),
+          int.parse(plantt.timeReminder.format(Get.context!).split(":")[1]),
+          plant,
+        );
+        Get.snackbar("Error, Plant not update to cloud", "Try again");
+        Get.offAll(const NavScreen());
+      }).timeout(const Duration(seconds: 15), onTimeout: (() async {
+        Get.snackbar("Not added to cloud due to time out,", "Try again");
+        Get.offAll(const NavScreen());
+      }));
+    } catch (e) {
+      Get.snackbar("Plant not added to cloud because an error occured",
+          "Try again later");
+      Get.offAll(const NavScreen());
+    }
   }
 
-  // Future<void> updatePlant(PlantModel plant) {
-  //   _db.doc(plant.id.toString()).update(plant.toJson());
-  // }
+  Future<void>? updatePlant(PlantModel plant) async {
+    try {
+      _db.doc(plant.id.toString()).set(plant.toJson()).then((value) async {
+        await PushNotifications().scheduledNotification(
+          int.parse(plant.timeReminder.format(Get.context!).split(":")[0]),
+          int.parse(plant.timeReminder.format(Get.context!).split(":")[1]),
+          plant,
+        );
+        Get.snackbar("Success", "Plant updated to cloud");
+        Get.offAll(const NavScreen());
+      }).catchError((onError) async {
+        Get.snackbar("Error, Plant not update to cloud", "Try again");
+        Get.offAll(const NavScreen());
+      }).timeout(const Duration(seconds: 15), onTimeout: (() async {
+        Get.snackbar("Not updated in cloud due to time out,", "Try again");
+        Get.offAll(const NavScreen());
+      }));
+    } catch (e) {
+      Get.snackbar(
+          "Plant not updated to cloud because an error occured", "Try again");
+      Get.offAll(const NavScreen());
+    }
+  }
 
-  // Future<void> deletePlantById(PlantModel plant) => _db.doc(plant.id.toString()).delete();
-
+  Future<void> deletePlantById(PlantModel plant) =>
+      _db.doc(plant.id.toString()).delete();
 }

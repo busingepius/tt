@@ -7,11 +7,14 @@ class ShowScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(payload!),
+
+      appBar: AppBar(backgroundColor: Colors.green,
+        title:const  Text("Reminder"),
       ),
-      body: Container(
-        child: Text(payload!),
+      body: const Center(
+        child: SizedBox(
+          child:  Text("That was your reminder"),
+        ),
       ),
     );
   }

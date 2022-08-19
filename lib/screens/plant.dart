@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:plant/models/plant_model.dart';
-
 import 'package:intl/intl.dart';
 import 'package:plant/screens/nav_screen.dart';
 import 'package:plant/screens/plant_editor.dart';
-
 import '../data/data.dart';
-import '../data/sql.dart';
 
 class Plant extends StatelessWidget {
   final PlantModel? plant;
@@ -16,18 +13,22 @@ class Plant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.green,
         elevation: 0.0,
         actionsIconTheme: const IconThemeData(color: Colors.white),
         leading: const BackButton(),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () async {
-              await PlantDatabase.instance.delete(plant!.id!);
-              Get.offAll(const NavScreen());
+              await PlantDatabase.instance
+                  .delete(plant!.id!)
+                  .then((value) async {
+                await PushNotifications().cancelNotification(plant!.id!);
+                Get.offAll(const NavScreen());
+              });
+              
             },
           ),
           GestureDetector(
@@ -67,374 +68,73 @@ class Plant extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        height: double.infinity,
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Positioned(
-              top: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: AspectRatio(
+                aspectRatio: 1.0,
+                child: plant!.image == ""
+                    ? Image.asset(
+                        "images/splash.png",
+                        fit: BoxFit.cover,
+                      )
+                    : Image.memory(
+                        Utility.dataFromBase64String(plant!.image),
+                        fit: BoxFit.cover,
+                      ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              child: Text(
+                plant!.title,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 24.0),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 2.0),
+              child: Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 10.0),
-                    child: Text(
-                      plant!.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 24.0),
-                    ),
+                  const Icon(Icons.timelapse),
+                  const SizedBox(width: 5.0),
+                  Text(
+                    "Time of reminder: ${plant!.timeReminder.format(context)}",
+                    style: const TextStyle(color: Colors.black45),
                   ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 2.0),
-                    child: Text(
-                      plant!.timeReminder.format(context),
-                      style: TextStyle(color: Colors.yellow[400]),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 10.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.timelapse),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text(
-                          DateFormat.yMMMd().format(plant!.dateReminder),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 2.0),
-                    child: Text(
-                      plant!.completed
-                          ? "No reminders"
-                          : "Has a pending reminder",
-                      style: TextStyle(color: Colors.yellow[400]),
-                    ),
-                  )
                 ],
               ),
             ),
-            Positioned(
-              bottom: 0.0,
-              left: 0.0, right: 0.0,
-              // height:50,
-              // width: 50,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-                height: 450,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.only(
-                    // bottomLeft: Radius.circular(3.0),
-                    // bottomRight: Radius.circular(3.0),
-                    topLeft: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_month),
+                  const SizedBox(
+                    width: 5.0,
                   ),
-                ),
-                child: ListView(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Plant Care',
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.water_drop),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Watering \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.watering == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.light_mode_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Weeding \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.weeding == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.device_thermostat_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Sowing \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.sowing == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.landslide_sharp),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Nursury Bed \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.nurseryBed == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.auto_stories_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Mulching \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.mulching == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.auto_stories_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Potting \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.potting == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.auto_stories_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Gap filling \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.gapFiling == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.auto_stories_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Spraying \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.spraying == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.auto_stories_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Fertiliz \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.fertilizing == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.auto_stories_outlined),
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'Thinning \n',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: plant!.thinning == true
-                                  ? "Enabled"
-                                  : "Disabled",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
-                      child: ListTile(
-                        leading: const Icon(Icons.auto_stories_outlined),
-                        title: RichText(
-                          text: TextSpan(
-                            text: 'Pruning \n',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: plant!.pruning == true
-                                    ? "Enabled"
-                                    : "Disabled",
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                  Text(
+                    "Day of reminder: ${DateFormat.yMMMd().format(plant!.dateReminder)}",
+                    style: const TextStyle(color: Colors.black54),
+                  ),
+                ],
               ),
             ),
-            Positioned(
-              top: 80.0,
-              right: 30.0,
-              // right: 60.0,
-              child: Container(
-                height: 160.0,
-                width: 150.0,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10.0),
-                  ),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image:
-                        MemoryImage(Utility.dataFromBase64String(plant!.image)),
-                  ),
-                ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 2.0),
+              child: Text(
+                plant!.description,
+                style: const TextStyle(color: Colors.black87),
               ),
-            ),
+            )
           ],
         ),
       ),
