@@ -33,7 +33,7 @@ class HomeContainer extends StatelessWidget {
               margin:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
               decoration: const BoxDecoration(
-                color: Colors.white54,
+                color: Colors.white,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(10.0),
                   bottomRight: Radius.circular(10.0),

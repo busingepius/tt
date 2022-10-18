@@ -41,7 +41,9 @@ CREATE TABLE $tablePlants (
   ${PlantFields.numberWatered} $integerType, 
   ${PlantFields.numberWeeded} $integerType, 
   ${PlantFields.startedPlants} $integerType,
-  ${PlantFields.leftPlants} $integerType
+  ${PlantFields.leftPlants} $integerType,
+  ${PlantFields.soldPlants} $integerType,
+  ${PlantFields.transplantedPlants} $integerType
   )
 ''');
   }

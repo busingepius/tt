@@ -51,6 +51,7 @@ class LoginScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10),
                   child: TextFormField(
                     controller: authProvider.email,
+                    
                     decoration:const InputDecoration(
                         hintStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,

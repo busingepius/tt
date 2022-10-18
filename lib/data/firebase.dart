@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:plant/models/models.dart';
@@ -60,9 +63,11 @@ class FirebaseDatabase {
       createdTime: plant.createdTime,
       dateReminder: plant.dateReminder,
       leftPlants: plant.leftPlants,
+      soldPlants: plant.soldPlants,
       numberWatered: plant.numberWatered,
       numberWeeded: plant.numberWeeded,
       startedPlants: plant.startedPlants,
+      transplantedPlants: plant.transplantedPlants,
       timeReminder: plant.timeReminder,
     );
     try {
@@ -80,14 +85,15 @@ class FirebaseDatabase {
           int.parse(plantt.timeReminder.format(Get.context!).split(":")[1]),
           plant,
         );
-        Get.snackbar("Error, Plant not update to cloud", "Try again");
+        // debugPrint(onError.printError());
+        Get.snackbar("Error, Plant not update to cloud ", "Try again");
         Get.offAll(const NavScreen());
       }).timeout(const Duration(seconds: 15), onTimeout: (() async {
-        Get.snackbar("Not added to cloud due to time out,", "Try again");
+        Get.snackbar("Not added to cloud due to time out ,", "Try again");
         Get.offAll(const NavScreen());
       }));
     } catch (e) {
-      Get.snackbar("Plant not added to cloud because an error occured",
+      Get.snackbar("Plant not added to cloud because an error occured ",
           "Try again later");
       Get.offAll(const NavScreen());
     }
@@ -104,15 +110,15 @@ class FirebaseDatabase {
         Get.snackbar("Success", "Plant updated to cloud");
         Get.offAll(const NavScreen());
       }).catchError((onError) async {
-        Get.snackbar("Error, Plant not update to cloud", "Try again");
+        Get.snackbar("Error, Plant not update to cloud ", "Try again");
         Get.offAll(const NavScreen());
       }).timeout(const Duration(seconds: 15), onTimeout: (() async {
-        Get.snackbar("Not updated in cloud due to time out,", "Try again");
+        Get.snackbar("Not updated in cloud due to time out ,", "Try again");
         Get.offAll(const NavScreen());
       }));
     } catch (e) {
       Get.snackbar(
-          "Plant not updated to cloud because an error occured", "Try again");
+          "Plant not updated to cloud because an error occured ", "Try again");
       Get.offAll(const NavScreen());
     }
   }

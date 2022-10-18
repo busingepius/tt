@@ -12,6 +12,8 @@ class PlantFormWidget extends StatelessWidget {
   final int? numberWeeded;
   final int? startedPlants;
   final int? leftPlants;
+  final int? soldPlants;
+  final int? transplantedPlants;
 
   final ValueChanged<String> onChangedTitle;
   final ValueChanged<String> onChangedDescription;
@@ -22,6 +24,8 @@ class PlantFormWidget extends StatelessWidget {
   final ValueChanged<int> onChangednumberWeeded;
   final ValueChanged<int> onChangedstartedPlants;
   final ValueChanged<int> onChangedleftPlants;
+  final ValueChanged<int> onChangedsoldPlants;
+  final ValueChanged<int> onChangedtransplantedPlants;
 
   const PlantFormWidget({
     Key? key,
@@ -29,6 +33,8 @@ class PlantFormWidget extends StatelessWidget {
     this.timeReminder,
     this.leftPlants,
     this.numberWatered,
+    this.soldPlants,
+    this.transplantedPlants,
     this.numberWeeded,
     this.startedPlants,
     this.title = '',
@@ -42,19 +48,21 @@ class PlantFormWidget extends StatelessWidget {
     required this.onChangednumberWeeded,
     required this.onChangedstartedPlants,
     required this.onChangedleftPlants,
+    required this.onChangedsoldPlants,
+    required this.onChangedtransplantedPlants,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
         child: Padding(
-          padding:const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               buildTitle(),
-             const SizedBox(height: 8),
+              const SizedBox(height: 8),
               buildDescription(),
-             const SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
@@ -96,7 +104,16 @@ class PlantFormWidget extends StatelessWidget {
               const SizedBox(height: 10.0),
               timesWateredBuilder(),
               const SizedBox(height: 10.0),
-              timesWeededBuilder()
+              timesWeededBuilder(),
+              const SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Expanded(child: plantsTransplanted()),
+                  const SizedBox(width: 10.0),
+                  Expanded(child: plantsSold()),
+                ],
+              ),
+              const SizedBox(height: 10.0),
             ],
           ),
         ),
@@ -111,7 +128,6 @@ class PlantFormWidget extends StatelessWidget {
           fontSize: 24,
         ),
         decoration: InputDecoration(
-          
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -317,7 +333,7 @@ class PlantFormWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
           hintText: 'Plants started with',
-          hintStyle:const TextStyle(
+          hintStyle: const TextStyle(
             color: Colors.grey,
             fontWeight: FontWeight.w400,
           ),
@@ -340,12 +356,12 @@ class PlantFormWidget extends StatelessWidget {
           final number = int.parse(val);
           onChangedstartedPlants(number);
         },
-        keyboardType:const TextInputType.numberWithOptions(),
+        keyboardType: const TextInputType.numberWithOptions(),
       );
 
   Widget reminderWithPlantsBuilder() => TextFormField(
         maxLines: 1,
-        keyboardType:const TextInputType.numberWithOptions(),
+        keyboardType: const TextInputType.numberWithOptions(),
         initialValue: leftPlants.toString(),
         style: const TextStyle(
           color: Colors.black,
@@ -357,7 +373,7 @@ class PlantFormWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
           hintText: 'Plants left',
-          hintStyle:const TextStyle(
+          hintStyle: const TextStyle(
             color: Colors.grey,
             fontWeight: FontWeight.w400,
           ),
@@ -378,5 +394,83 @@ class PlantFormWidget extends StatelessWidget {
           final number = int.parse(val);
           onChangedleftPlants(number);
         },
+      );
+
+  Widget plantsTransplanted() => TextFormField(
+        maxLines: 1,
+        initialValue: transplantedPlants.toString(),
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          hintText: 'Plants transplanted',
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.w400,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.blue, width: 1.0),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          labelText: 'Plants transplanted',
+          labelStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        validator: (transplantedPlants) =>
+            transplantedPlants != null && transplantedPlants.isEmpty
+                ? 'cannot be empty'
+                : null,
+        onChanged: (val) {
+          final number = int.parse(val);
+          onChangedtransplantedPlants(number);
+        },
+        keyboardType: const TextInputType.numberWithOptions(),
+      );
+
+  Widget plantsSold() => TextFormField(
+        maxLines: 1,
+        initialValue: soldPlants.toString(),
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          hintText: 'Plants sold ',
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.w400,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.blue, width: 1.0),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          labelText: 'Plants sold',
+          labelStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        validator: (soldPlants) =>
+            soldPlants != null && soldPlants.isEmpty
+                ? 'cannot be empty'
+                : null,
+        onChanged: (val) {
+          final number = int.parse(val);
+          onChangedsoldPlants(number);
+        },
+        keyboardType: const TextInputType.numberWithOptions(),
       );
 }

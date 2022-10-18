@@ -16,6 +16,8 @@ class PlantFields {
     numberWeeded,
     startedPlants,
     leftPlants,
+    soldPlants,
+    transplantedPlants,
   ];
 
   static const String id = '_id';
@@ -29,10 +31,12 @@ class PlantFields {
   static const String numberWeeded = 'numberWeeded';
   static const String startedPlants = 'startedPlants';
   static const String leftPlants = 'leftPlants';
+  static const String soldPlants = 'soldPlants';
+  static const String transplantedPlants = 'transplantedPlants';
 }
 
 class PlantModel {
-   int? id;
+  int? id;
   final String title;
   final String description;
   final String image;
@@ -43,8 +47,10 @@ class PlantModel {
   final int numberWeeded;
   final int startedPlants;
   final int leftPlants;
+  final int soldPlants;
+  final int transplantedPlants;
 
-   PlantModel({
+  PlantModel({
     this.id,
     required this.title,
     required this.description,
@@ -56,6 +62,8 @@ class PlantModel {
     required this.numberWeeded,
     required this.startedPlants,
     required this.leftPlants,
+    required this.soldPlants,
+    required this.transplantedPlants,
   });
 
   PlantModel copy({
@@ -70,6 +78,8 @@ class PlantModel {
     int? numberWeeded,
     int? startedPlants,
     int? leftPlants,
+    int? soldPlants,
+    int? transplantedPlants,
   }) =>
       PlantModel(
         id: id ?? this.id,
@@ -83,6 +93,8 @@ class PlantModel {
         numberWeeded: numberWeeded ?? this.numberWeeded,
         startedPlants: startedPlants ?? this.startedPlants,
         leftPlants: leftPlants ?? this.leftPlants,
+        soldPlants: soldPlants ?? this.soldPlants,
+        transplantedPlants: transplantedPlants ?? this.transplantedPlants,
       );
 
   static PlantModel fromJson(Map<String, Object?> json) => PlantModel(
@@ -93,9 +105,11 @@ class PlantModel {
         createdTime: DateTime.parse(json[PlantFields.createdTime] as String),
         dateReminder: DateTime.parse(json[PlantFields.dateReminder] as String),
         leftPlants: json[PlantFields.leftPlants] as int,
+        soldPlants: json[PlantFields.soldPlants] as int,
         numberWatered: json[PlantFields.numberWatered] as int,
         numberWeeded: json[PlantFields.numberWeeded] as int,
         startedPlants: json[PlantFields.startedPlants] as int,
+        transplantedPlants: json[PlantFields.transplantedPlants] as int,
         timeReminder: TimeOfDay(
           hour: int.parse(
               json[PlantFields.timeReminder].toString().split(":")[0]),
@@ -117,6 +131,8 @@ class PlantModel {
       PlantFields.numberWeeded: numberWeeded,
       PlantFields.startedPlants: startedPlants,
       PlantFields.leftPlants: leftPlants,
+      PlantFields.soldPlants: soldPlants,
+      PlantFields.transplantedPlants: transplantedPlants,
       PlantFields.createdTime: createdTime.toIso8601String(),
     };
     if (id != null) {

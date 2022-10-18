@@ -30,6 +30,8 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
   late int numberWeeded;
   late int startedPlants;
   late int leftPlants;
+  late int soldPlants;
+  late int transplantedPlants;
 
   @override
   void initState() {
@@ -44,6 +46,8 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
     numberWeeded = widget.plant?.numberWeeded ?? 0;
     startedPlants = widget.plant?.startedPlants ?? 0;
     leftPlants = widget.plant?.leftPlants ?? 0;
+    soldPlants = widget.plant?.soldPlants ?? 0;
+    transplantedPlants = widget.plant?.transplantedPlants ?? 0;
   }
 
   bool noPicture = true;
@@ -174,6 +178,8 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
                   numberWeeded: numberWeeded,
                   startedPlants: startedPlants,
                   leftPlants: leftPlants,
+                  soldPlants: soldPlants,
+                  transplantedPlants: transplantedPlants,
                   onChangedTitle: (title) => setState(() => this.title = title),
                   onChangeddateReminder: (dateReminder) =>
                       setState(() => this.dateReminder = dateReminder),
@@ -185,8 +191,12 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
                       setState(() => this.numberWeeded = numberWeeded),
                   onChangedstartedPlants: (startedPlants) =>
                       setState(() => this.startedPlants = startedPlants),
+                  onChangedsoldPlants: (soldPlants) =>
+                      setState(() => this.soldPlants = soldPlants),
                   onChangedleftPlants: (leftPlants) =>
                       setState(() => this.leftPlants = leftPlants),
+                  onChangedtransplantedPlants: (transplantedPlants) =>
+                      setState(() => this.transplantedPlants = transplantedPlants),
                   onChangedDescription: (description) =>
                       setState(() => this.description = description),
                 ),
@@ -244,6 +254,8 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
       description: description,
       image: image,
       dateReminder: dateReminder,
+      soldPlants: soldPlants,
+      transplantedPlants: transplantedPlants,
       leftPlants: leftPlants,
       numberWatered: numberWatered,
       numberWeeded: numberWeeded,
@@ -264,9 +276,11 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
       createdTime: DateTime.now(),
       dateReminder: dateReminder,
       leftPlants: leftPlants,
+      soldPlants: soldPlants,
       numberWatered: numberWatered,
       numberWeeded: numberWeeded,
       startedPlants: startedPlants,
+      transplantedPlants: transplantedPlants,
       timeReminder: timeReminder,
     );
 
