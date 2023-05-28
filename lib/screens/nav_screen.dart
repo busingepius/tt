@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plant/screens/plant_editor.dart';
+import 'plant_editor.dart';
 import 'screens.dart';
 
 class NavScreen extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:plant/screens/plant_editor.dart';
 import '../data/data.dart';
 import '../models/plant_model.dart';
 import '../widget/widgets.dart';
+import 'plant_editor.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

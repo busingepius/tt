@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:plant/data/image.dart';
-import 'package:plant/models/plant_model.dart';
+import 'package:treeTech/data/image.dart';
+
+import '../models/models.dart';
 
 class MyPlant extends StatelessWidget {
   final PlantModel? plant;

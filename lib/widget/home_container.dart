@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:plant/models/plant_model.dart';
 import 'package:intl/intl.dart';
 import '../data/data.dart';
+import '../models/models.dart';
 
 class HomeContainer extends StatelessWidget {
   final List<PlantModel> plants;

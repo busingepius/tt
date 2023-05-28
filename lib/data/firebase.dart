@@ -2,8 +2,8 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:plant/models/models.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../models/models.dart';
 import '../screens/screens.dart';
 
 class FirebaseDatabase {

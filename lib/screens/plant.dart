@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:plant/models/plant_model.dart';
 import 'package:intl/intl.dart';
-import 'package:plant/screens/nav_screen.dart';
-import 'package:plant/screens/plant_editor.dart';
 import '../data/data.dart';
+import '../models/models.dart';
+import 'plant_editor.dart';
+import 'screens.dart';
 
 class Plant extends StatelessWidget {
   final PlantModel? plant;

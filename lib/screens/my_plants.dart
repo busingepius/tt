@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:plant/screens/plant_editor.dart';
 import '../data/sql.dart';
 import '../models/plant_model.dart';
 import '../widget/widgets.dart';
+import 'plant_editor.dart';
 import 'screens.dart';
 
 class MyPlants extends StatefulWidget {
