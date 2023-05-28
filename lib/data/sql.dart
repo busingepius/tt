@@ -52,7 +52,6 @@ CREATE TABLE $tablePlants (
     final db = await instance.database;
 
     plant.id = await db.insert(tablePlants, plant.toJson());
-    await FirebaseDatabase().addPlant(plant.id!, plant);
     return plant.copy(id: plant.id);
   }
 
@@ -110,3 +109,5 @@ CREATE TABLE $tablePlants (
     db.close();
   }
 }
+
+

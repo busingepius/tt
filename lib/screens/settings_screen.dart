@@ -16,7 +16,7 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Get.find();
+    // UserProvider userProvider = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -97,7 +97,7 @@ class _SettingsState extends State<Settings> {
                     trailing: const Icon(Icons.arrow_forward_ios_outlined),
                     enabled: true,
                     onTap: () async {
-                      await userProvider.signOut();
+                      // await userProvider.signOut();
                     }),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),
               ],
@@ -131,7 +131,7 @@ class _SettingsState extends State<Settings> {
                   onTap: () => Get.defaultDialog(
                     title: "About us",
                     middleText:
-                        "We are YLEC, a Ugandan based organisation with love to benchmark ideas and solutions to better Ugandan livelihoods and the environment ",
+                        "We are Gegabox Technologies, a Ugandan based organisation with love to benchmark ideas and solutions to better Ugandan livelihoods and the environment ",
                   ),
                 ),
                 const Divider(height: 2.0, indent: 15.0, endIndent: 15.0),

@@ -265,7 +265,6 @@ class _AddEditPlantPageState extends State<AddEditPlantPage> {
 
     await PlantDatabase.instance.update(plant);
 
-    await FirebaseDatabase().updatePlant(plant);
   }
 
   Future addPlant() async {
